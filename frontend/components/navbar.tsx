@@ -1,26 +1,12 @@
 import { useRouter } from 'next/router'
-import {
-  ChakraProvider,
-  useStyleConfig,
-  Text,
-  Box,
-} from "@chakra-ui/react"
-import { extendTheme } from "@chakra-ui/react"
 import styles from './styles/Home.module.scss';
 import {
+  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
 } from "@chakra-ui/react"
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  RouteComponentProps,
-  Link as RouteLink
-} from 'react-router-dom'
-import routes from './config/routes';
 import Link from 'next/link'
 
 
