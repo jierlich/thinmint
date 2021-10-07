@@ -34,6 +34,30 @@ const theme = extendTheme({
       },
     },
   },
+    textStyles: {
+    h1: {
+      // you can also use responsive styles
+      fontSize: ["48px", "72px"],
+      fontWeight: "bold",
+      lineHeight: "110%",
+      letterSpacing: "-2%",
+      color: "red",
+    },
+    h2: {
+      fontSize: ["24px", "36px"],
+      fontWeight: "bold",
+      lineHeight: "110%",
+      letterSpacing: "-1%",
+    },
+    p1: {
+    	fontSize: ["16px"],
+    	color: 'brand.black.900',
+    },
+    p2: {
+    	fontSize: ["16px"],
+    	color: 'brand.black.600',
+    },
+  },
 })
 
 
