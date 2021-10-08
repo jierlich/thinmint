@@ -7,60 +7,61 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ERC721.sol";
 
 contract Alt721 is ERC721, Ownable {
-    address rootNft;
-    uint price;
-    string baseUri;
-    mapping(uint -> bool) unlocked;
+    address public rootNft;
+    uint public price;
+    string public baseUri;
+    mapping(uint => bool) public unlocked;
 
     constructor(
         address _rootNft,
         string memory _name,
         string memory _symbol,
         uint _price,
-        string memory _baseUri,
+        string memory _baseUri
     ) ERC721(_name, _symbol){
         // store original contract
-        rootNft = rootNft;
+        rootNft = _rootNft;
         price = _price;
         baseUri = _baseUri;
     }
 
-    function mint(uint tokenId) public {
+    function mint(uint tokenId) payable public {
         // only owner of original
-        require(IERC721(rootNft).ownerOf(tokenId) == msg.sender, "Only root NFT owner can mint")
-        require(msg.value >= price, "Not enough payment for mint")
+        require(IERC721(rootNft).ownerOf(tokenId) == msg.sender, "Only root NFT owner can mint");
+        require(msg.value >= price, "Not enough payment for mint");
         // safeMint
-        super._safeMint(msg.sender, tokenId)
+        super._safeMint(msg.sender, tokenId);
     }
 
     function _beforeTokenTransfer(
         address from,
-        address to,
+        address,
         uint256 tokenId
-    ) internal override {
+    ) internal override view {
+        // check that we handle burn correctly
         if (from == address(0)) {
-            return
+            return;
         }
-        require(unlocked[tokenId], "Can not transfer locked token")
+        require(unlocked[tokenId], "Can not transfer locked token");
     }
 
-    function unlock() public {
+    function unlock(uint tokenId) public {
         require(IERC721(rootNft).ownerOf(tokenId) == msg.sender, "Only owner can unlock");
-        unlocked[tokendId] = true;
+        unlocked[tokenId] = true;
         _owners[tokenId] = msg.sender;
     }
 
     function lock(uint tokenId) public {
         require(Alt721.ownerOf(tokenId) == IERC721(rootNft).ownerOf(tokenId), "Must own root and alt to lock");
         require(IERC721(rootNft).ownerOf(tokenId) == msg.sender, "Only owner can lock");
-        unlocked[tokendId] = false;
+        unlocked[tokenId] = false;
     }
 
     function ownerOf(uint tokenId) public view override returns (address){
         if(!unlocked[tokenId]) {
             return IERC721(rootNft).ownerOf(tokenId);
         }
-        return _owners[tokenId]
+        return _owners[tokenId];
     }
 
     function withdraw() onlyOwner() public {
@@ -71,7 +72,7 @@ contract Alt721 is ERC721, Ownable {
         price = _price;
     }
 
-    function updateBaseUri(string _baseUri) onlyOwner() public {
+    function updateBaseUri(string memory _baseUri) onlyOwner() public {
         baseUri = _baseUri;
     }
 }
