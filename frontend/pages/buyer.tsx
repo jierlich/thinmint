@@ -32,12 +32,6 @@ function BuyerPage(props: Props) {
     return (
         <Container maxW="container.md">
           <Text fontWeight="bold" fontSize="6xl"> Thin Mints </Text>
-          <div>
-            <p>Should render the title {props.title}</p> 
-            <Link href="/buyer/[tokenid]" as={`/buyer/${props.tokenid}`}> 
-              <a>Let's Pretend this is a derivative: {props.tokenid} </a>
-            </Link>
-          </div>
           <SimpleGrid py="24px" columns={{sm: 2, md: 3}} spacing="40px">
             {projectMetadatas.map((metadata) => (
               <Card

@@ -1,12 +1,20 @@
 import { useRouter } from 'next/router'
 import { Image, Box, extendTheme, Text, Button, createStandaloneToast } from "@chakra-ui/react"
 import { ethers } from "ethers";
-
+import { toGatewayURL } from "nft.storage"
 
 const toast = createStandaloneToast()
 var alt721abi = require('./alt721abi.json')
+
 async function connectToWallet() {
 	window.ethereum.enable();
+}
+
+
+async function getURL(URI) {
+    const url = toGatewayURL(URI);
+    console.log(url);
+    return url;
 }
 
 let contract = {};
@@ -18,8 +26,14 @@ function connectToContract() {
   // Bored Ape Yacht Club
   const contractAddress = "0x97AB7fE5247Af76Af50CFFCb841051AB483f8326";
   contract = new ethers.Contract(contractAddress, alt721abi, signer);
-  contract.name(signer.getAddress())
-     .then(text => {
+}
+
+function mintToken(_tokenId) {
+  const overrides = {
+    value: ethers.utils.parseEther("0.1")
+  }
+  contract.mint(_tokenId, overrides)
+    .then(text => {
        console.log(text);
         const data = text || JSON.parse(text);
         ToastSuccess(data);
@@ -29,20 +43,12 @@ function connectToContract() {
     	ToastError(error)
     	new Error(error)}
     	);
-
-}
-
-function mintToken(_tokenId) {
-  const overrides = {
-    value: ethers.utils.parseEther("0.1")
-  }
-  contract.mint(_tokenId, overrides);
 }
 
 function ToastSuccess(data) {
   return (
     toast({
-        title: "Alt 721 Connection Successful",
+        title: "Successfully Minted",
         description: data,
         status: "success",
         duration: 5000,
@@ -56,12 +62,11 @@ function ToastError(data) {
 	return(
       toast({
   		title: "An error occurred.",
-  		description: "Unable to mint Thin Mint.",
+  		description: data.message,
   		status: "error",
   		duration: 9000,
   		isClosable: true,
   		position: "bottom-left",
-  		color: "blue",
     })
   )
 }
@@ -71,17 +76,16 @@ function loadDerivative(tokenid)  {
 	return {
 		image_url: 'Rectangle_38_gradient.png',
 		metadata: {
-			'title': 'Gradient Punks',
-			'detail': 'Basically, ASCIIPunks are what would happen if the CryptoPunks fell into a portal and wound up in the terminal dimension! These little dudes are comprised of 12x12 lines of ASCII text generated entirely on-chain! \n \nThat\'s right! When each little punk is minted, a generative algorithm is run to produce a random punk, which you can see an example of here. Each punk is self-contained on the ethereum blockchain. In other words, the NFT itself is the art.',
+			'title': 'Vintage Apes',
+			'detail': 'Your favorite apes rebranded in a fun vintage style!',
 			'price': '0.04',
 		}
 	}
 }
 
 function loadOriginal(tokenid) {
-	// Needs IPFS I think?
 	return {
-		image_url: 'Rectangle_38.png'
+		image_url: 'https://dweb.link/ipfs/QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi'
 	}
 }
 
@@ -89,7 +93,8 @@ function loadOriginal(tokenid) {
 function handleClick() {
     console.log('Click happened');
     connectToContract();
-    mintToken(0);
+    mintToken(1);
+
 }
 
 
@@ -112,7 +117,6 @@ const originalContainer = {
     borderRadius: '25px',
     float: 'left',
     marginTop: '10%',
-    marginLeft: '8%',
 }
 const transactionInformation = {
 	wordWrap: 'break-word',
@@ -136,7 +140,7 @@ const TokenId = () => {
   return (
   	<div>
   	<div style={derivativeContainer} >
-  	  <Image boxSize = '250px' float='left' src={`../${derivativeObject.image_url}`} />
+  	  <Image boxSize = '250px' float='left' src={'https://dweb.link/ipfs/bafybeiaphqbd7mzzrg7kalh7uukat64a5n3rvkscetbxjvwolu3nqhpq7q'} />
   	  <div style={derivativeMeta}>
   	    <p>Project</p>
   	    <Text paddingTop=".5rem" textStyle="h2">  {`${derivativeObject.metadata.title}`} </Text>
@@ -144,11 +148,11 @@ const TokenId = () => {
   	  </div>
   	</div>
   	<div style={originalContainer} >
-  	  <Text paddingBottom=".5rem" textStyle="h2">  Commission a Thin Mint </Text>
-  	  <Image boxSize = '150px' float='left' src={`../${orginalObject.image_url}`} />
+  	  <Text paddingBottom=".5rem" textStyle="h2">  Link this Thin Mint </Text>
+  	  <Image boxSize = '150px' float='left' src={'https://dweb.link/ipfs/QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi'} />
   	  <div style={transactionInformation}>
   	    <p>Projects</p>
-  	    <Text textStyle="p2">CryptoPunk and GradientPunk</Text>
+  	    <Text textStyle="p2">Bored Apes and Vintage Bored Apes</Text>
   	    <p>Price</p>
   	    <Text textStyle="p1">{`${derivativeObject.metadata.price}`} ETH
   	    <span> <Button onClick={handleClick} bg="brand.primary" padding="0 4rem" position="absolute" marginLeft="30px"> Mint </Button> </span>
