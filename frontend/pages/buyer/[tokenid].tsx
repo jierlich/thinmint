@@ -26,6 +26,16 @@ function connectToContract() {
   // Bored Ape Yacht Club
   const contractAddress = "0x97AB7fE5247Af76Af50CFFCb841051AB483f8326";
   contract = new ethers.Contract(contractAddress, alt721abi, signer);
+  contract.name()
+    .then(text => {
+       console.log(text);
+        const data = text || JSON.parse(text);
+     })
+    .catch(error => {
+    	console.log(error);
+    	ToastError(error)
+    	new Error(error)}
+    	);
 }
 
 function mintToken(_tokenId) {
