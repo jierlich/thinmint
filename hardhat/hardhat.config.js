@@ -1,6 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
-const environment = require('./env')
+const environment = require('../env')
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
