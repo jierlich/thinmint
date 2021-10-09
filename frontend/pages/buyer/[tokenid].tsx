@@ -1,16 +1,23 @@
 import { useRouter } from 'next/router'
 import { Image, Box, extendTheme, Text, Button, createStandaloneToast } from "@chakra-ui/react"
 import { ethers } from "ethers";
-
+import { toGatewayURL } from "nft.storage"
 
 const toast = createStandaloneToast()
+
 
 async function connectToWallet() {
 	window.ethereum.enable();
 }
 
-function connectToContract() {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+async function getURL(URI) {
+    const url = toGatewayURL(URI);
+    console.log(url);
+    return url;
+}
+
+async function connectToContract() {
+  const provider = await new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
   // Bored Ape Yacht Club
   const contractAddress = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
@@ -18,23 +25,14 @@ function connectToContract() {
     // Some details about the token
     "function name() view returns (string)",
     "function symbol() view returns (string)",
+    "function tokenURI(uint) view returns (string)",
 
     // Get the account balance
     "function balanceOf(address) view returns (uint)",
   ];
   const contract = new ethers.Contract(contractAddress, daiAbi, provider);
-  contract.name(signer.getAddress())
-     .then(text => {
-       console.log(text);
-          const data = text || JSON.parse(text);
-          ToastSuccess(data);
-     })
-    .catch(error => {
-    	console.log(error);
-    	ToastError(error)
-    	new Error(error)}
-    	);
-
+  console.log(contract);
+  return contract;
 }
 
 function ToastSuccess(data) {
@@ -64,7 +62,7 @@ function ToastError(data) {
   )
 }
 
-function loadDerivative(tokenid)  {
+async function loadDerivative(tokenid)  {
 	// Needs IPFS
 	return {
 		image_url: 'Rectangle_38_gradient.png',
@@ -76,16 +74,47 @@ function loadDerivative(tokenid)  {
 	}
 }
 
-function loadOriginal(tokenid) {
-	// Needs IPFS I think?
+
+function loadData(tokenid) {
+	const original = loadOriginal(tokenid);
+	console.log(original);
+	const derivative = loadDerivative(tokenid);
 	return {
-		image_url: 'Rectangle_38.png'
+		original: original,
+		derivative: derivative,
 	}
+}
+
+async function loadOriginal(tokenid) {
+  const provider = await new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  // Bored Ape Yacht Club
+  const contractAddress = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
+  const daiAbi = [
+    // Some details about the token
+    "function tokenURI(uint) view returns (string)",
+  ];
+  const contract = new ethers.Contract(contractAddress, daiAbi, provider);
+  contract.tokenURI(tokenid)
+     .then(text => {
+     	  console.log(text);
+          const tokenURI = text;
+          const metadataURI = getURL(tokenURI);
+          return {
+          	image_url: metadataURI.href
+          }
+
+          
+     })
+    .catch(error => {
+    	console.log(error);
+    	ToastError(error)
+    	new Error(error)}
+    	);
 }
 
 
 function handleClick() {
-    console.log('Click happened');
     connectToContract();
 }
 
@@ -124,8 +153,10 @@ const transactionInformation = {
 const TokenId = () => {
   const router = useRouter();
   const { tokenid } = router.query;
-  const derivativeObject = loadDerivative(tokenid);
-  const orginalObject = loadOriginal(tokenid);
+  const data = loadData(tokenid);
+  console.log(data);
+  // const derivativeObject = loadDerivative(tokenid);
+  // const orginalObject = loadOriginal(tokenid);
   if (typeof window !== "undefined") {
        connectToWallet();
   }
@@ -142,14 +173,14 @@ const TokenId = () => {
   	</div>
   	<div style={originalContainer} >
   	  <Text paddingBottom=".5rem" textStyle="h2">  Commission a Thin Mint </Text>
-  	  <Image boxSize = '150px' float='left' src={`../${orginalObject.image_url}`} />
+  	  <Image boxSize = '150px' float='left' src={"https://dweb.link/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ"} />
   	  <div style={transactionInformation}>
   	    <p>Projects</p>
-  	    <Text textStyle="p2">CryptoPunk and GradientPunk</Text>
+  	    <Text textStyle="p2">Buzzed Bears and Antique Bears</Text>
   	    <p>Price</p>
-  	    <Text textStyle="p1">{`${derivativeObject.metadata.price}`} ETH
+{  	    <Text textStyle="p1">{`${data.derivative.metadata.price}`} ETH
   	    <span> <Button onClick={handleClick} bg="brand.primary" padding="0 4rem" position="absolute" marginLeft="30px"> Mint </Button> </span>
-  	    </Text>
+  	    </Text>}
   	  </div>
   	</div>
   	</div>
