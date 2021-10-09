@@ -4,30 +4,25 @@ import { ethers } from "ethers";
 
 
 const toast = createStandaloneToast()
-
+var alt721abi = require('./alt721abi.json')
 async function connectToWallet() {
 	window.ethereum.enable();
 }
 
+let contract = {};
+let signer = {};
+
 function connectToContract() {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
+  signer = provider.getSigner();
   // Bored Ape Yacht Club
-  const contractAddress = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
-  const daiAbi = [
-    // Some details about the token
-    "function name() view returns (string)",
-    "function symbol() view returns (string)",
-
-    // Get the account balance
-    "function balanceOf(address) view returns (uint)",
-  ];
-  const contract = new ethers.Contract(contractAddress, daiAbi, provider);
+  const contractAddress = "0x97AB7fE5247Af76Af50CFFCb841051AB483f8326";
+  contract = new ethers.Contract(contractAddress, alt721abi, signer);
   contract.name(signer.getAddress())
      .then(text => {
        console.log(text);
-          const data = text || JSON.parse(text);
-          ToastSuccess(data);
+        const data = text || JSON.parse(text);
+        ToastSuccess(data);
      })
     .catch(error => {
     	console.log(error);
@@ -37,10 +32,17 @@ function connectToContract() {
 
 }
 
+function mintToken(_tokenId) {
+  const overrides = {
+    value: ethers.utils.parseEther("0.1")
+  }
+  contract.mint(_tokenId, overrides);
+}
+
 function ToastSuccess(data) {
   return (
     toast({
-        title: "Mint Successful",
+        title: "Alt 721 Connection Successful",
         description: data,
         status: "success",
         duration: 5000,
@@ -87,6 +89,7 @@ function loadOriginal(tokenid) {
 function handleClick() {
     console.log('Click happened');
     connectToContract();
+    mintToken(0);
 }
 
 
