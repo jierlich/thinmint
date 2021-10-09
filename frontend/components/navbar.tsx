@@ -27,19 +27,12 @@ const isActive = true
       <BreadcrumbItem color={activePage == '/buyer' ? 'brand.secondary' : 'black'}>
         <Link href="/buyer"> Buyer </Link>
       </BreadcrumbItem>
-      <BreadcrumbItem olor={activePage == '/creator' ? 'brand.secondary' : 'black'}>
-        <Link href="/creator"> Creator </Link>
-      </BreadcrumbItem>
       <Box float="right">
         <BreadcrumbItem color={activePage == '/about' ? 'brand.secondary' : 'black'}>
           <Link href="/about"> About </Link>
         </BreadcrumbItem>
-        <BreadcrumbItem paddingLeft="1em" color={activePage == '/my-art' ? 'brand.secondary' : 'black'}>
-            <Link href="/my-art"> My Art</Link>
-         </BreadcrumbItem>
-        </Box>
+      </Box>
     </Breadcrumb>
-
   )
 }
 
