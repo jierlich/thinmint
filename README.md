@@ -6,5 +6,6 @@ Baking cookies...
 * make contract
 * figure out balances
 * tests
+* deployment script
 * test deployment + opensea
 * add natspec
