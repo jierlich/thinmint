@@ -3,25 +3,31 @@ import React from 'react';
 import Link from 'next/link'
 import { Card } from '../components/card';
 import { SimpleGrid, Container, Text } from '@chakra-ui/react'
+import { NFTStorage, toGatewayURL } from 'nft.storage'
+import { packToBlob } from 'ipfs-car/pack/blob'
 
 interface Props {
     title?: string;
     tokenid?: string;
 }
 
-function BuyerPage(props: Props) {
+type ProjectMetadata = {
+  title: string
+  createdFor: string
+  thumnailUrl: string
+  description: string
+}
 
-    // TODO: Pull info from IPFS here
-    // TODO: Format info from IPFS here
-    
-    let NFTList: any = []
-    // TODO: Change filler function once we actually pull info from IPFS
-    // for all NFTs in a project
-    for (let i = 0; i < 11; i++) {
-        NFTList.push(
-            <Card image="Rectangle_38_gradient.png" title="GradientPunks" originalProject="CryptoPunk" price={400} />
-        )
+function BuyerPage(props: Props) {
+    const vintageApeMetadata = {
+      title: "Vintage Apes",
+      createdFor: "Bored Ape Yacht Club",
+      thumbnailUrl: toGatewayURL("ipfs://bafybeiaphqbd7mzzrg7kalh7uukat64a5n3rvkscetbxjvwolu3nqhpq7q").href,
+      description: "Vintage Apes are test.",
+      price: 2,
     }
+    
+    const projectMetadatas: ProjectMetadata[] = [vintageApeMetadata]
 
     return (
         <Container maxW="container.md">
@@ -33,7 +39,15 @@ function BuyerPage(props: Props) {
             </Link>
           </div>
           <SimpleGrid py="24px" columns={{sm: 2, md: 3}} spacing="40px">
-              {NFTList}
+            {projectMetadatas.map((metadata) => (
+              <Card
+                title={metadata.title}
+                image={metadata.thumbnailUrl}
+                originalProject={metadata.createdFor}
+                price={metadata.price}
+                key={metadata.title}
+              />
+            ))}
           </SimpleGrid>
         </Container>
     );

@@ -4,3 +4,4 @@ cache
 environment.js
 out
 .DS_Store
+env.json

@@ -4,11 +4,12 @@ import { ethers } from "ethers";
 import { toGatewayURL } from "nft.storage"
 
 const toast = createStandaloneToast()
-
+var alt721abi = require('./alt721abi.json')
 
 async function connectToWallet() {
 	window.ethereum.enable();
 }
+
 
 async function getURL(URI) {
     const url = toGatewayURL(URI);
@@ -33,12 +34,42 @@ async function mintWithContract() {
   const contract = new ethers.Contract(contractAddress, daiAbi, provider);
   console.log(contract);
   return contract;
+
+let contract = {};
+let signer = {};
+
+function connectToContract() {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  signer = provider.getSigner();
+  // Bored Ape Yacht Club
+  const contractAddress = "0x97AB7fE5247Af76Af50CFFCb841051AB483f8326";
+  contract = new ethers.Contract(contractAddress, alt721abi, signer);
+  contract.name(signer.getAddress())
+     .then(text => {
+       console.log(text);
+        const data = text || JSON.parse(text);
+        ToastSuccess(data);
+     })
+    .catch(error => {
+    	console.log(error);
+    	ToastError(error)
+    	new Error(error)}
+    	);
+
+
+}
+
+function mintToken(_tokenId) {
+  const overrides = {
+    value: ethers.utils.parseEther("0.1")
+  }
+  contract.mint(_tokenId, overrides);
 }
 
 function ToastSuccess(data) {
   return (
     toast({
-        title: "Mint Successful",
+        title: "Alt 721 Connection Successful",
         description: data,
         status: "success",
         duration: 5000,
@@ -82,7 +113,10 @@ function loadOriginal(tokenid) {
 
 
 function handleClick() {
-    mintWithContract();
+    console.log('Click happened');
+    connectToContract();
+    mintToken(0);
+
 }
 
 
