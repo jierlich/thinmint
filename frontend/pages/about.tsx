@@ -53,7 +53,6 @@ function AboutPage() {
           <HStack spacing={8}>
           <Card image="Rectangle_38_gradient.png" title="GradientPunk" originalProject="CryptoPunk" price={400} />
           <Card image="Rectangle_38_gradient.png" title="GradientPunk" originalProject="CryptoPunk" price={400} />
-          <Card image="Rectangle_38_gradient.png" title="GradientPunk" originalProject="CryptoPunk" price={400} />
           </HStack>
           </Center>
           <Text py="28px" fontSize="4xl" fontWeight="bold">
