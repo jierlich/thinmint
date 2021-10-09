@@ -17,24 +17,6 @@ async function getURL(URI) {
     return url;
 }
 
-async function mintWithContract() {
-  const provider = await new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  // Bored Ape Yacht Club
-  const contractAddress = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
-  const daiAbi = [
-    // Some details about the token
-    "function name() view returns (string)",
-    "function symbol() view returns (string)",
-    "function tokenURI(uint) view returns (string)",
-
-    // Get the account balance
-    "function balanceOf(address) view returns (uint)",
-  ];
-  const contract = new ethers.Contract(contractAddress, daiAbi, provider);
-  console.log(contract);
-  return contract;
-
 let contract = {};
 let signer = {};
 
@@ -44,8 +26,14 @@ function connectToContract() {
   // Bored Ape Yacht Club
   const contractAddress = "0x97AB7fE5247Af76Af50CFFCb841051AB483f8326";
   contract = new ethers.Contract(contractAddress, alt721abi, signer);
-  contract.name(signer.getAddress())
-     .then(text => {
+}
+
+function mintToken(_tokenId) {
+  const overrides = {
+    value: ethers.utils.parseEther("0.1")
+  }
+  contract.mint(_tokenId, overrides)
+    .then(text => {
        console.log(text);
         const data = text || JSON.parse(text);
         ToastSuccess(data);
@@ -55,21 +43,12 @@ function connectToContract() {
     	ToastError(error)
     	new Error(error)}
     	);
-
-
-}
-
-function mintToken(_tokenId) {
-  const overrides = {
-    value: ethers.utils.parseEther("0.1")
-  }
-  contract.mint(_tokenId, overrides);
 }
 
 function ToastSuccess(data) {
   return (
     toast({
-        title: "Alt 721 Connection Successful",
+        title: "Successfully Minted",
         description: data,
         status: "success",
         duration: 5000,
@@ -83,12 +62,11 @@ function ToastError(data) {
 	return(
       toast({
   		title: "An error occurred.",
-  		description: "Unable to mint Thin Mint.",
+  		description: data.message,
   		status: "error",
   		duration: 9000,
   		isClosable: true,
   		position: "bottom-left",
-  		color: "blue",
     })
   )
 }
@@ -98,7 +76,7 @@ function loadDerivative(tokenid)  {
 	return {
 		image_url: 'Rectangle_38_gradient.png',
 		metadata: {
-			'title': 'Vintage',
+			'title': 'Vintage Apes',
 			'detail': 'Your favorite apes rebranded in a fun vintage style!',
 			'price': '0.04',
 		}
@@ -115,7 +93,7 @@ function loadOriginal(tokenid) {
 function handleClick() {
     console.log('Click happened');
     connectToContract();
-    mintToken(0);
+    mintToken(1);
 
 }
 
@@ -170,7 +148,7 @@ const TokenId = () => {
   	  </div>
   	</div>
   	<div style={originalContainer} >
-  	  <Text paddingBottom=".5rem" textStyle="h2">  Commission a Thin Mint </Text>
+  	  <Text paddingBottom=".5rem" textStyle="h2">  Link this Thin Mint </Text>
   	  <Image boxSize = '150px' float='left' src={'https://dweb.link/ipfs/QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi'} />
   	  <div style={transactionInformation}>
   	    <p>Projects</p>

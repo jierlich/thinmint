@@ -1,4 +1,5 @@
 import { Container, Center, Text, Flex, Badge, Image, Box, Spacer, Heading, Button } from '@chakra-ui/react'
+import Link from 'next/link'
 
 export function Card({
     image,
@@ -13,7 +14,7 @@ export function Card({
 }) {
     return (
       
-      <Box maxWidth={52} borderWidth="1px" borderRadius="lg" overflow="hidden">
+      <Box maxWidth={52} borderWidth="1px" borderRadius="lg" overflow="hidden" >
         <Center p="8px" pb="12px">
           <Image borderRadius="4px" src={image} alt="Image of Derivative NFT" />
         </Center>
@@ -57,7 +58,12 @@ export function Card({
           >
             Created for: {originalProject}
           </Text>
-          </Box>
+          <Text color='brand.tertiary' fontWeight='bold'>
+            <Link color='brand.primary' href="/buyer/[tokenid]" as={`/buyer/1`}>  
+                Mint Me
+            </Link> 
+          </Text>
+        </Box>
       </Box>
     //     <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
     //   <Image src={`../../${image}`} alt="Image of Derivative NFT" />
