@@ -15,7 +15,7 @@ export function Card({
       
       <Box maxWidth={52} borderWidth="1px" borderRadius="lg" overflow="hidden">
         <Center p="8px" pb="12px">
-          <Image borderRadius="4px" src={`../../${image}`} alt="Image of Derivative NFT" />
+          <Image borderRadius="4px" src={image} alt="Image of Derivative NFT" />
         </Center>
         <Box px="8px" mb="4px">
           <Flex>
